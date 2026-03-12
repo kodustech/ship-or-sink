@@ -1,45 +1,45 @@
-# People & Pager
+# Ship or Sink
 
-Jogo de decisões para engineering managers em uma interface inspirada em Slack.
+Decision game for engineering managers in a Slack-inspired interface.
 
-## O que tem agora
+## What's in it
 
-- Campanha de 32 semanas dividida em 4 atos
-- Pressao crescente de run, com custo acumulado e follow-ups
-- Deck com 63 cartas
-- Mais foco em people management, carreira, performance, on-call, alinhamento, arquitetura e política interna
-- Arcos recorrentes com personagens sorteados por run
-- Cada partida ativa um subconjunto diferente desses arcos
-- Curva de atos mais clara: setup, alinhamento, política e trade-offs finais
-- Leitura mais curta no chat, com copy mais seca
-- Escolha de origem antes da run, com bonus inicial e passiva propria
-- Draft de perks aleatorias no início dos atos 2, 3 e 4
-- Score, best score e streak
-- Save da run no final com nome do gestor
-- Leaderboard local com score, semanas e legado do gestor
-- Thread com stakeholders e respostas rápidas
-- Troca de idioma entre PT-BR e EN sem resetar a run
-- Consequências escondidas nas escolhas
-- Cartas mais ambiguas com temas atuais de AI e startup
-- Follow-ups condicionais
-- HUD com quatro barras
-- Sidebar de score, status e reset
-- Controles por clique e teclado
+- 32-week campaign split into 4 acts
+- Escalating run pressure with accumulated costs and follow-ups
+- Deck with 63+ cards
+- Focus on people management, career, performance, on-call, alignment, architecture and internal politics
+- Recurring arcs with characters randomized per run
+- Each run activates a different subset of arcs
+- Clear act curve: setup, alignment, politics and final trade-offs
+- Short chat-style copy
+- Origin selection before each run with unique starting bonus and passive
+- Random perk draft at the start of acts 2, 3 and 4
+- Score, best score and streak tracking
+- Run save with manager name
+- Local leaderboard with score, weeks survived and manager legacy
+- Stakeholder thread with quick replies
+- Language toggle between PT-BR and EN without resetting the run
+- Hidden consequences in choices
+- Ambiguous cards with current AI and startup themes
+- Conditional follow-ups
+- HUD with four metric bars
+- Sidebar with score, status and reset
+- Click and keyboard controls
 
-## Como a run termina
+## How a run ends
 
-- Game over quando `Team`, `Delivery`, `Trust` ou `Budget` chegam a `0`
-- Vitoria quando você fecha as `32` semanas
-- No fim, você pode salvar o nome do gestor e registrar o legado dele no leaderboard local
+- Game over when `Team`, `Delivery`, `Trust` or `Budget` reaches `0`
+- Victory when you survive all `32` weeks
+- At the end you can save your manager name and register their legacy on the local leaderboard
 
-## Como rodar
+## How to run
 
-Abra o `index.html` no navegador.
+Open `index.html` in the browser.
 
-Se preferir servir via HTTP:
+To serve via HTTP:
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Depois acesse `http://localhost:8080`.
+Then visit `http://localhost:8080`.
