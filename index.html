@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070b12" />
+    <title>Ship or Sink - Chat Ops</title>
+    <meta
+      id="meta-description"
+      name="description"
+      content="Jogo de decisões para engineering managers em uma interface inspirada em Slack."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="cabinet" class="slack-shell">
+      <aside class="sidebar">
+        <div class="workspace">
+          <div class="workspace__mark">⚓</div>
+          <div>
+            <p id="workspace-label" class="sidebar__eyebrow">Workspace</p>
+            <h1 id="workspace-title">Ship or Sink</h1>
+          </div>
+          <button id="settings-button" class="workspace__settings" type="button">Config</button>
+        </div>
+
+        <section class="sidebar__section sidebar__section--stats">
+          <div class="stat-card">
+            <span id="week-label" class="stat-card__label">Week</span>
+            <strong id="week-counter" class="stat-card__value">001</strong>
+          </div>
+          <div class="stat-card">
+            <span id="score-label" class="stat-card__label">Score</span>
+            <strong id="score-counter" class="stat-card__value">000000</strong>
+          </div>
+          <div class="stat-card">
+            <span id="best-label" class="stat-card__label">Best</span>
+            <strong id="best-counter" class="stat-card__value">000000</strong>
+          </div>
+          <div class="stat-card">
+            <span id="streak-label" class="stat-card__label">Streak</span>
+            <strong id="streak-counter" class="stat-card__value">x0</strong>
+          </div>
+        </section>
+
+        <section class="sidebar__section sidebar__section--optional">
+          <p id="build-label" class="sidebar__eyebrow">Build</p>
+          <div id="origin-card" class="origin-card"></div>
+          <div class="build-subsection">
+            <p id="perks-label" class="sidebar__eyebrow">Perks</p>
+            <div id="perk-list" class="perk-list"></div>
+            <p id="perk-empty" class="sidebar-note">Nenhuma vantagem ativa ainda.</p>
+          </div>
+        </section>
+
+        <section class="sidebar__section sidebar__section--optional">
+          <p id="leaderboard-label" class="sidebar__eyebrow">Ranking</p>
+          <div id="leaderboard-list" class="leaderboard-list"></div>
+          <p id="leaderboard-empty" class="sidebar-note">Nenhuma run salva ainda.</p>
+          <button id="ranking-toggle" class="sidebar__link" type="button" hidden>Ver ranking completo</button>
+        </section>
+
+        <button id="restart-button" class="sidebar__reset" type="button">Reset run</button>
+      </aside>
+
+      <section class="chat-pane">
+        <header class="chat-header">
+          <div>
+            <p id="chat-channel-label" class="chat-header__eyebrow">Channel</p>
+            <h2># exec-quarter</h2>
+            <p id="chat-subtitle" class="chat-header__sub">Stakeholders aparecem aqui. Você responde como engineering manager.</p>
+          </div>
+          <div id="timeline" class="timeline"></div>
+          <div class="chat-header__hud">
+            <div class="chat-header__status">
+              <span id="run-status-label" class="chat-header__eyebrow">Run status</span>
+              <div id="status-chip" class="status-chip">stable</div>
+            </div>
+            <div id="score-gain" class="gain-pill">+000</div>
+            <button id="history-toggle" class="signal-panel__toggle" type="button">History</button>
+            <button id="details-toggle" class="signal-panel__toggle" type="button" aria-pressed="false">Detalhes</button>
+          </div>
+        </header>
+
+        <div id="signal-panel" class="signal-panel">
+          <div class="signal-panel__main">
+            <span id="signal-label" class="signal-panel__label">Signal</span>
+            <strong id="signal-copy" class="signal-panel__copy">Act 1 // setup e fricção</strong>
+            <p id="sidebar-note" class="sidebar-note">Segure Team, Delivery, Trust e Budget.</p>
+          </div>
+        </div>
+
+        <div id="metrics" class="metric-ribbon" aria-live="polite"></div>
+
+        <div id="thread" class="thread" aria-live="polite"></div>
+
+        <footer class="composer">
+          <div class="composer__header">
+            <div>
+              <span id="composer-label" class="composer__eyebrow">Quick replies</span>
+              <p id="composer-title" class="composer__title">Escolha sua resposta</p>
+            </div>
+            <span id="composer-hint" class="composer__hint">Left / Right ou A / D. Consequências ocultas.</span>
+          </div>
+
+          <div class="composer__choices">
+            <button id="left-choice" class="reply-card reply-card--left" type="button">
+              <span id="left-key" class="reply-card__key">LEFT</span>
+              <strong id="left-label" class="reply-card__title"></strong>
+              <span id="left-summary" class="reply-card__summary"></span>
+              <span id="left-effects" class="reply-card__effects"></span>
+            </button>
+
+            <button id="right-choice" class="reply-card reply-card--right" type="button">
+              <span id="right-key" class="reply-card__key">RIGHT</span>
+              <strong id="right-label" class="reply-card__title"></strong>
+              <span id="right-summary" class="reply-card__summary"></span>
+              <span id="right-effects" class="reply-card__effects"></span>
+            </button>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <dialog id="run-summary-dialog" class="run-dialog">
+      <form id="run-summary-form" class="run-dialog__card" method="dialog">
+        <p id="run-summary-kicker" class="run-dialog__kicker">Legacy</p>
+        <h3 id="run-summary-title" class="run-dialog__title">Run finished</h3>
+        <p id="run-summary-copy" class="run-dialog__copy"></p>
+        <div class="run-dialog__stats">
+          <div class="run-dialog__stat">
+            <span id="run-summary-score-label" class="run-dialog__label">Score</span>
+            <strong id="run-summary-score" class="run-dialog__value">000000</strong>
+          </div>
+          <div class="run-dialog__stat">
+            <span id="run-summary-week-label" class="run-dialog__label">Weeks</span>
+            <strong id="run-summary-week" class="run-dialog__value">000</strong>
+          </div>
+        </div>
+        <div class="run-dialog__legacy">
+          <span id="run-summary-legacy-label" class="run-dialog__label">Marked as</span>
+          <strong id="run-summary-legacy" class="run-dialog__legacy-value"></strong>
+        </div>
+        <div id="run-summary-unlocks" class="run-dialog__field" hidden>
+          <span id="run-summary-unlocks-label" class="run-dialog__label">Unlocked now</span>
+          <div id="run-summary-unlocks-list" class="unlock-list"></div>
+        </div>
+        <label class="run-dialog__field" for="run-name-input">
+          <span id="run-name-label" class="run-dialog__label">Manager name</span>
+          <input id="run-name-input" class="run-dialog__input" name="run_name" maxlength="24" autocomplete="nickname" />
+        </label>
+        <div id="share-preview" class="share-preview" hidden>
+          <canvas id="share-canvas" width="600" height="400"></canvas>
+          <img id="share-image" class="share-preview__img" alt="Run result card" hidden />
+        </div>
+        <div class="run-dialog__actions">
+          <button id="share-button" class="run-dialog__button" type="button">Share</button>
+          <button id="save-run-button" class="run-dialog__button run-dialog__button--primary" type="submit" value="save">
+            Save run
+          </button>
+          <button id="close-run-button" class="run-dialog__button" type="submit" value="close">
+            Close
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="run-setup-dialog" class="run-dialog run-dialog--setup">
+      <form id="run-setup-form" class="run-dialog__card setup-card" method="dialog">
+        <div class="setup-header">
+          <p id="run-setup-kicker" class="run-dialog__kicker">Origin</p>
+          <h3 id="run-setup-title" class="run-dialog__title">Choose your manager</h3>
+          <p id="run-setup-copy" class="run-dialog__copy"></p>
+        </div>
+        <div id="origin-options" class="origin-roster"></div>
+        <section class="setup-hero" aria-live="polite">
+          <span id="setup-selection-label" class="run-dialog__label">Selected</span>
+          <div id="setup-selection-card" class="setup-hero__card"></div>
+          <button id="start-run-button" class="setup-hero__start" type="submit" value="start">
+            Start run
+          </button>
+        </section>
+        <details class="setup-meta">
+          <summary id="career-label" class="setup-meta__summary">Career & unlocks</summary>
+          <section class="career-panel">
+            <div class="career-panel__block">
+              <div id="career-stats" class="career-stats"></div>
+            </div>
+            <div class="career-panel__block">
+              <span id="career-unlocks-label" class="run-dialog__label">Next unlocks</span>
+              <div id="career-unlocks" class="unlock-list"></div>
+            </div>
+          </section>
+        </details>
+      </form>
+    </dialog>
+
+    <dialog id="perk-dialog" class="run-dialog run-dialog--wide">
+      <form id="perk-form" class="run-dialog__card" method="dialog">
+        <p id="perk-kicker" class="run-dialog__kicker">Perk draft</p>
+        <h3 id="perk-title" class="run-dialog__title">Pick one advantage</h3>
+        <p id="perk-copy" class="run-dialog__copy"></p>
+        <div id="perk-options" class="perk-grid"></div>
+      </form>
+    </dialog>
+
+    <dialog id="settings-dialog" class="run-dialog">
+      <form id="settings-form" class="run-dialog__card" method="dialog">
+        <p id="settings-kicker" class="run-dialog__kicker">Config</p>
+        <h3 id="settings-title" class="run-dialog__title">Game settings</h3>
+        <p id="settings-copy" class="run-dialog__copy"></p>
+        <div class="run-dialog__field">
+          <span id="language-label" class="run-dialog__label">Language</span>
+          <div class="locale-switch" role="group" aria-label="Language">
+            <button id="locale-pt" class="locale-switch__button" type="button">PT-BR</button>
+            <button id="locale-en" class="locale-switch__button" type="button">EN</button>
+          </div>
+        </div>
+        <div class="run-dialog__field">
+          <span id="sound-label" class="run-dialog__label">Sound</span>
+          <div class="locale-switch" role="group" aria-label="Sound">
+            <button id="sound-on" class="locale-switch__button" type="button">ON</button>
+            <button id="sound-off" class="locale-switch__button" type="button">OFF</button>
+          </div>
+        </div>
+        <div class="run-dialog__field">
+          <span id="daily-seed-label" class="run-dialog__label">Daily Seed</span>
+          <div class="locale-switch" role="group" aria-label="Daily Seed">
+            <button id="daily-seed-on" class="locale-switch__button" type="button">ON</button>
+            <button id="daily-seed-off" class="locale-switch__button" type="button">OFF</button>
+          </div>
+        </div>
+        <div class="run-dialog__actions run-dialog__actions--single">
+          <button id="close-settings-button" class="run-dialog__button run-dialog__button--primary" type="submit" value="close">
+            Close
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="ranking-dialog" class="run-dialog run-dialog--wide">
+      <form id="ranking-form" class="run-dialog__card" method="dialog">
+        <p id="ranking-kicker" class="run-dialog__kicker">Hall</p>
+        <h3 id="ranking-title" class="run-dialog__title">Ranking</h3>
+        <div class="ranking-filters" role="group">
+          <button id="ranking-filter-all" class="ranking-filter ranking-filter--active" type="button" data-filter="all">All</button>
+          <button id="ranking-filter-daily" class="ranking-filter" type="button" data-filter="daily">Today</button>
+          <button id="ranking-filter-country" class="ranking-filter" type="button" data-filter="country">My country</button>
+        </div>
+        <div id="ranking-list" class="ranking-list"></div>
+        <p id="ranking-empty" class="sidebar-note" hidden>Nenhuma run aqui.</p>
+        <div class="run-dialog__actions run-dialog__actions--single">
+          <button id="close-ranking-button" class="run-dialog__button run-dialog__button--primary" type="submit" value="close">Close</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="history-dialog" class="run-dialog run-dialog--wide">
+      <form id="history-form" class="run-dialog__card" method="dialog">
+        <p id="history-kicker" class="run-dialog__kicker">Log</p>
+        <h3 id="history-title" class="run-dialog__title">Decision history</h3>
+        <div id="history-list" class="history-list"></div>
+        <div class="run-dialog__actions run-dialog__actions--single">
+          <button id="close-history-button" class="run-dialog__button run-dialog__button--primary" type="submit" value="close">Close</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./deck-extra.js"></script>
+    <script src="./arc-data.js"></script>
+    <script src="./build-data.js"></script>
+    <script src="./progression-data.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
